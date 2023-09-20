@@ -1,0 +1,17 @@
+userName: ${BROWSERSTACK_USERNAME}
+accessKey: ${BROWSERSTACK_ACCESS_KEY}
+framework: cucumber
+app: bs://556654357687987643222455757
+appiumVersion: 2.0.0
+platforms:
+  - platformName: ios
+    deviceName: iPhone 14 Pro Max
+    platformVersion: 16
+parallelsPerPlatform: 1
+browserstackLocal: false
+buildName: MobileTesting-automation
+buildIdentifier: ${BUILD_NUMBER}
+projectName: Spotify App Android version
+testObservability: true
+debug: true
+networkLogs: true

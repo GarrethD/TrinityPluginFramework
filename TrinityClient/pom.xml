@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nl.postnl.automationframework.clientbuild</groupId>
+    <artifactId>cliendbuild</artifactId>
+    <version>1.8-SNAPSHOT</version>
+
+    <parent>
+        <groupId>en.core.automationframework.parentpom</groupId>
+        <artifactId>pomdependencymanager</artifactId>
+        <version>1.00-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
+        <utilityPlugin.version>v1.108</utilityPlugin.version>
+        <webPlugin.version>v1.84</webPlugin.version>
+        <mobilePlugin.version>v1.49</mobilePlugin.version>
+        <apiPlugin.version>v1.10</apiPlugin.version>
+    </properties>
+
+    <dependencies>
+<!-- Experimental -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>klov-reporter</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21-ea+17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>21-ea+17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>21-ea+24</version>
+        </dependency>
+
+        <dependency>
+            <groupId>TrinityFramework.utilityPlugin</groupId>
+            <artifactId>utilityPlugin</artifactId>
+            <version>${utilityPlugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>TrinityFramework.webPlugin</groupId>
+            <artifactId>webPlugin</artifactId>
+            <version>${webPlugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>TrinityFramework..mobilePlugin</groupId>
+            <artifactId>mobilePLugin</artifactId>
+            <version>${mobilePlugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>TrinityFramework.apiPlugin</groupId>
+            <artifactId>apiPlugin</artifactId>
+            <version>${apiPlugin.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>browserstack</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>getClasspathFilenames</id>
+                                <goals>
+                                    <goal>properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <!--                            <suiteXmlFiles>-->
+                            <!--                                <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>-->
+                            <!--                            </suiteXmlFiles>-->
+                            <argLine>-javaagent:${com.browserstack:browserstack-java-sdk:jar} --add-opens
+                                java.base/java.lang=ALL-UNNAMED
+                            </argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>CoreDependencies</id>
+            <url></url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>CoreDependencies</id>
+            <url></url>
+        </repository>
+
+        <snapshotRepository>
+            <id>CoreDependencies</id>
+            <url></url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
+

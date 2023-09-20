@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{ISO8601} %highlight{%-5level} %30.30c{1.}: %highlight{%msg%n%throwable}"
+                           disableAnsi="false"/>
+        </Console>
+    </appenders>
+    <loggers>
+        <logger name="en.Core" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name="org.openqa.selenium" level="ERROR" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+    </loggers>
+</configuration>

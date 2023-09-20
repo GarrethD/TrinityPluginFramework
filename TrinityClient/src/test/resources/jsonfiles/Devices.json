@@ -1,0 +1,36 @@
+{
+  "Pixel6": {
+    "platformName": "android",
+    "appium:app": "appfiles/examples/Spotify_8.8.70.532.apk",
+    "appium:appActivity": "spotify.app.splash.SplashActivity",
+    "appium:appPackage": "spotify.app",
+    "appium:automationName": "UIAutomator2",
+    "appium:avd": "Pixel_6",
+    "appium:deviceName": "Pixel 6",
+    "appium:fullReset": true,
+    "appium:platformVersion": "34.0",
+    "appium:skipUnlock": true,
+    "appium:udid": "emulator-5554"
+  },
+  "GalaxyS8": {
+    "platformName": "android",
+    "appium:app": "appfiles/examples/Spotify_8.8.70.532.apk",
+    "appium:appActivity": "spotify.app.splash.SplashActivity",
+    "appium:appPackage": "spotify.app",
+    "appium:automationName": "UIAutomator2",
+    "appium:deviceName": "Samsung Galaxy S8 - Mobile Box 5",
+    "appium:fullReset": true,
+    "appium:platformVersion": "34.0",
+    "appium:skipUnlock": true,
+    "appium:udid": "ce041714100fe0d80c"
+  },
+  "iPhone14ProMax": {
+    "platformName": "iOS",
+    "appium:app": "appfiles/examples/Spotify.app.zip",
+    "appium:automationName": "XCUITest",
+    "appium:deviceName": "iPhone 14 Pro Max",
+    "appium:fullReset": true,
+    "appium:platformVersion": "16.4",
+    "appium:skipUnlock": true
+  }
+}
