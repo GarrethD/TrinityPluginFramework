@@ -1,9 +1,12 @@
 variables:
-  MAVEN_CLI_OPTS: "-s ci-settings.xml"
+  MAVEN_CLI_OPTS: " --batch-mode -s ci-settings.xml"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 stages:
   - deploy
+
+#default:
+#    tags:
 
 deploy:
   stage: deploy

@@ -4,17 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nl.postnl.automationframework.parentpom</groupId>
-    <artifactId>pomdependencymanager</artifactId>
-    <version>${revision}</version>
+    <groupId>trinity.pluginframework.parentpom</groupId>
+    <artifactId>trinityparentPom</artifactId>
+    <version>v1.00</version>
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.${CI_PIPELINE_IID}-SNAPSHOT</revision>
-
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-
         <cucumber.version>7.13.0</cucumber.version>
         <cucumber-extentsreport.version>3.1.1</cucumber-extentsreport.version>
         <testng.version>7.8.0</testng.version>
@@ -37,17 +34,6 @@
         <browserstack-java-sdk.version>1.9.2</browserstack-java-sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <developers>
-        <developer>
-            <email>garreth.dean@spritecloud.com</email>
-            <name>Garreth Dean</name>
-        </developer>
-        <developer>
-            <email>marco.maes@polteq.com</email>
-            <name>Marco Maes</name>
-        </developer>
-    </developers>
 
     <dependencies>
         <dependency>
@@ -175,6 +161,26 @@
             <version>2.11.0</version>
         </dependency>
         <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>klov-reporter</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21-ea+17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>21-ea+17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>21-ea+24</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
@@ -208,20 +214,20 @@
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>CoreDependencies</id>
-            <url>https://pnl.gitlab.schubergphilis.com/api/v4/projects/4293/packages/maven</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>TrinityPlugin</id>-->
+<!--            <url></url>-->
+<!--        </repository>-->
     </repositories>
 
     <distributionManagement>
-        <repository>
-            <id>CoreDependencies</id>
-            <url>https://pnl.gitlab.schubergphilis.com/api/v4/projects/4293/packages/maven</url>
-        </repository>
-        <snapshotRepository>
-            <id>CoreDependencies</id>
-            <url>https://pnl.gitlab.schubergphilis.com/api/v4/projects/4293/packages/maven</url>
-        </snapshotRepository>
+<!--        <repository>-->
+<!--            <id>TrinityPlugin</id>-->
+<!--            <url></url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>TrinityPlugin</id>-->
+<!--            <url></url>-->
+<!--        </snapshotRepository>-->
     </distributionManagement>
 </project>

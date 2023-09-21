@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="apiplugin" />
+        <module name="trinitywebplugin" />
+        <module name="trinityclient" />
+        <module name="trinityutilityplugin" />
+        <module name="trinitymobileplugin" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cliendbuild" target="17" />
+      <module name="mobilecore" target="17" />
+      <module name="trinityapiplugin" target="17" />
+      <module name="trinityParentPom" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

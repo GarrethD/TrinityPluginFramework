@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/TrinityApiPlugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityApiPlugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityClient/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityClient/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityMobilePlugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityMobilePlugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityParentPom/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityParentPom/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityUtilityPlugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityUtilityPlugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityWebPlugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityWebPlugin/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
