@@ -1,0 +1,19 @@
+variables:
+  MAVEN_CLI_OPTS: "-s ci-settings.xml"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+stages:
+  - deploy
+
+default:
+    tags:
+      - pnl-assume-role-none
+
+deploy:
+  stage: deploy
+  image: 353131512553.dkr.ecr.eu-west-1.amazonaws.com/sbp-base/maven:3.8-openjdk-17-slim
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+
+  after_script:
+    - 'curl -X POST -H "Content-type: application/json" --data "{ \"channel\": \"#automation-depenendcy-updates\", \"username\": \"Sir Auto Mation\", \"blocks\": [ { \"type\": \"header\", \"text\": { \"type\": \"plain_text\", \"emoji\": true, \"text\": \"A New version of the Pom Dependency Manager core has been generated\" } }, { \"type\": \"divider\" }, { \"type\": \"section\", \"fields\": [ { \"type\": \"mrkdwn\", \"text\": \"Version: \n 1.${CI_PIPELINE_IID}-SNAPSHOT\" }, { \"type\": \"mrkdwn\", \"text\": \"Committed by: \n ${CI_COMMIT_AUTHOR}\" } ] }, { \"type\": \"divider\" }, { \"type\": \"header\", \"text\": { \"type\": \"plain_text\", \"emoji\": true, \"text\": \"CHANGE LOG: \" } }, { \"type\": \"section\", \"fields\": [ { \"type\": \"mrkdwn\", \"text\": \"${CI_COMMIT_MESSAGE}\" } ] } ] }" https://hooks.slack.com/services/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'
