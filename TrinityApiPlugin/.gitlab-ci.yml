@@ -1,0 +1,15 @@
+variables:
+  MAVEN_CLI_OPTS: " --batch-mode -s ci-settings.xml"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: windows-latest
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+
+  after_script:
+    - 'curl -X POST -H "Content-type: application/json" --data "{ \"channel\": \"#automation-depenendcy-updates\", \"username\": \"Sir Auto Mation\", \"blocks\": [ { \"type\": \"header\", \"text\": { \"type\": \"plain_text\", \"emoji\": true, \"text\": \"A New version of the API Core has been generated\" } }, { \"type\": \"divider\" }, { \"type\": \"section\", \"fields\": [ { \"type\": \"mrkdwn\", \"text\": \"Version: \n v1.${CI_PIPELINE_IID}\" }, { \"type\": \"mrkdwn\", \"text\": \"Committed by: \n ${CI_COMMIT_AUTHOR}\" } ] }, { \"type\": \"divider\" }, { \"type\": \"header\", \"text\": { \"type\": \"plain_text\", \"emoji\": true, \"text\": \"CHANGE LOG: \" } }, { \"type\": \"section\", \"fields\": [ { \"type\": \"mrkdwn\", \"text\": \"${CI_COMMIT_MESSAGE}\" } ] } ] }" https://hooks.slack.com/services/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'

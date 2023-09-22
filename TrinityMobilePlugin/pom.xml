@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>trinity.pluginframework.mobileplugin</groupId>
+    <artifactId>trinitymobileplugin</artifactId>
+    <packaging>jar</packaging>
+    <version>v1.0</version>
+    <name>mobilePlugin</name>
+
+    <parent>
+        <groupId>trinity.pluginframework.parentpom</groupId>
+        <artifactId>trinityparentPom</artifactId>
+        <version>v1.00</version>
+    </parent>
+
+    <properties>
+        <utilitycore.version>v1.114</utilitycore.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>trinity.pluginframework.utilityplugin</groupId>
+            <artifactId>trinityutilityplugin</artifactId>
+            <version>v1.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+<!--        <repository>-->
+<!--            <id>TrinityPlugins</id>-->
+<!--            <url>url>-->
+<!--        </repository>-->
+    </repositories>
+    <distributionManagement>
+<!--        <repository>-->
+<!--            <id>TrinityPlugins</id>-->
+<!--            <url></url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>TrinityPlugins</id>-->
+<!--            <url></url>-->
+<!--        </snapshotRepository>-->
+    </distributionManagement>
+</project>
