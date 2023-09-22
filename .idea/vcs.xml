@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/TrinityApiPlugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/TrinityMobilePlugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/TrinityUtilityPlugin" vcs="Git" />
   </component>
 </project>
