@@ -1,4 +1,4 @@
-package utilities.GoogleAuthentication;
+package utilities.Authentication;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;

@@ -17,9 +17,8 @@
     </parent>
 
     <properties>
-        <utilitycore.version>v1.114</utilitycore.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

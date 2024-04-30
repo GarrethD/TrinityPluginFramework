@@ -10,30 +10,40 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <cucumber.version>7.13.0</cucumber.version>
+        <!--suppress UnresolvedMavenProperty -->
+        <revision>v1.${CI_PIPELINE_IID}</revision>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <cucumber.version>7.16.1</cucumber.version>
         <cucumber-extentsreport.version>3.1.1</cucumber-extentsreport.version>
-        <testng.version>7.8.0</testng.version>
+        <testng.version>7.10.1</testng.version>
         <extentreports-test-ng-adapter.version>1.2.2</extentreports-test-ng-adapter.version>
         <extentreports-cucumber7-adapter>1.14.0</extentreports-cucumber7-adapter>
-        <annotations.version>23.0.0</annotations.version>
-        <poi.version>5.2.3</poi.version>
-        <selenium.version>4.10.0</selenium.version>
-        <webdrivermanager.version>5.4.1</webdrivermanager.version>
-        <appium.version>8.5.1</appium.version>
-        <slf4j.version>2.20.0</slf4j.version>
-        <javase.version>3.5.2</javase.version>
-        <opencsv.version>5.8</opencsv.version>
-        <bson.version>4.7.2</bson.version>
-        <rest-assured.version>5.3.1</rest-assured.version>
+        <annotations.version>24.1.0</annotations.version>
+        <poi.version>5.2.5</poi.version>
+        <selenium.version>4.19.1</selenium.version>
+        <webdrivermanager.version>5.8.0</webdrivermanager.version>
+        <appium.version>9.2.2</appium.version>
+        <slf4j.version>2.23.1</slf4j.version>
+        <javase.version>3.5.3</javase.version>
+        <opencsv.version>5.9</opencsv.version>
+        <bson.version>5.0.1</bson.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
         <shadow.dom.reader.version>0.1.4.1</shadow.dom.reader.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.32</lombok.version>
         <google.Auth>1.5.0</google.Auth>
-        <assertJ.version>3.24.2</assertJ.version>
-        <browserstack-java-sdk.version>1.9.2</browserstack-java-sdk.version>
+        <assertJ.version>3.25.3</assertJ.version>
+        <browserstack-java-sdk.version>1.13.20</browserstack-java-sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
+    <developers>
+        <developer>
+            <email>garreth.dean@spritecloud.com</email>
+            <name>Garreth Dean</name>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -73,6 +83,12 @@
             <artifactId>cucumber-extentsreport</artifactId>
             <version>${cucumber-extentsreport.version}</version>
         </dependency>
+            <dependency>
+                <groupId>com.optimaize.languagedetector</groupId>
+                <artifactId>language-detector</artifactId>
+                <version>0.6</version>
+            </dependency>
+
         <!--=========================================================================================-->
         <!--=============================  Utility core dependencies  ===============================-->
         <dependency>

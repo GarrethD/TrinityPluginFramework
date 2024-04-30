@@ -4,9 +4,13 @@ import com.browserstack.config.BrowserStackConfig;
 import com.browserstack.utils.UtilityMethods;
 import io.cucumber.java.Scenario;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -30,28 +34,44 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static freemarker.template.utility.Collections12.singletonMap;
 
 @Slf4j
 public class Driver {
+    @Getter
     public WebDriver webDriver;
+    @Getter
     public ShadowDriver shadowDriver;
-    private String browserName;
-    private WebDriverWait wait;
+    private FluentWait<WebDriver> wait;
+    @Setter
+    @Getter
+    private Duration defaultTimeout = Duration.ofSeconds(30);
+    @Setter
+    @Getter
+    private Duration defaultPollInterval = Duration.ofSeconds(1);
+    private Actions actions;
 
+    private static final Logger logger = Logger.getLogger(Driver.class.getName());
+
+    /**
+     * Enables custom driver and waiting set up.
+     *
+     * @param webDriver configured webdriver instance.
+     */
+    public Driver(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
 
     public Driver(String browserName) {
-        loggingSupressors();
-        if(UtilityMethods.getBrowserstackEnabled())
-        {
-           initializeRemoteDriver();
-        }
-        else {
-            this.browserName = browserName;
-            switch (this.browserName.toUpperCase()) {
+        if (UtilityMethods.getBrowserstackEnabled()) {
+            initializeRemoteDriver();
+        } else {
+            switch (browserName.toUpperCase()) {
 
                 case "CHROME":
                     initializeChromeDriver();
@@ -75,11 +95,10 @@ public class Driver {
                     initializeSafariDriver();
                     break;
             }
+            configure();
         }
-        shadowDriver = new ShadowDriver(webDriver);
-        wait = new WebDriverWait(webDriver, Duration.ofSeconds(30));
-
     }
+
     /**
      * Start the Chrome browse.
      */
@@ -87,24 +106,12 @@ public class Driver {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.setCapability("webSocketUrl", true);
         ChromeBrowserLogs(options);
         webDriver = new ChromeDriver(options);
         webDriver.manage().window().maximize();
-    }
-    /**
-     * Start the Chrome browse.
-     */
-    private void initializeRemoteDriver() {
-        try {
-            DesiredCapabilities cap = new DesiredCapabilities();
-            BrowserStackConfig bConfig = BrowserStackConfig.getInstance();
-            String username = bConfig.getUserName();
-            String accessToken = bConfig.getAccessKey();
-            webDriver = new RemoteWebDriver(new URL("https://"+username+":"+accessToken+"@hub.browserstack.com/wd/hub"),cap);
-            webDriver.manage().window().maximize();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -113,12 +120,32 @@ public class Driver {
     private void initializeHeadlessChromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
         options.addArguments("--remote-allow-origins=*");
-        options.addArguments("window-size=1920,1080");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--headless=new");
+        options.setCapability("webSocketUrl", true);
+        options.setAcceptInsecureCerts(true);
         ChromeBrowserLogs(options);
         webDriver = new ChromeDriver(options);
         webDriver.manage().window().maximize();
+    }
+
+    /**
+     * Start the remote browse (Browserstack).
+     */
+    private void initializeRemoteDriver() {
+        try {
+            DesiredCapabilities cap = new DesiredCapabilities();
+            BrowserStackConfig bConfig = BrowserStackConfig.getInstance();
+            String username = bConfig.getUserName();
+            String accessToken = bConfig.getAccessKey();
+            webDriver = new RemoteWebDriver(new URL("https://" + username + ":" + accessToken + "@hub.browserstack.com/wd/hub"), cap);
+            webDriver.manage().window().maximize();
+        } catch (MalformedURLException e) {
+            logger.log(Level.SEVERE, "Malformed URL Exception occurred", e);
+        }
     }
 
     /**
@@ -127,6 +154,8 @@ public class Driver {
     private void initializeFirefoxDriver() {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
+        options.setCapability("webSocketUrl", true);
+        options.addArguments("--window-size=1920,1080");
         FirefoxBrowserLogs(options);
         webDriver = new FirefoxDriver(options);
         webDriver.manage().window().maximize();
@@ -138,7 +167,8 @@ public class Driver {
     private void initializeHeadlessFirefoxDriver() {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--headless");
+        options.addArguments("-headless");
+        options.setCapability("webSocketUrl", true);
         options.addArguments("window-size=1920,1080");
         FirefoxBrowserLogs(options);
         webDriver = new FirefoxDriver(options);
@@ -150,6 +180,7 @@ public class Driver {
     private void initializeSafariDriver() {
         System.setProperty("webdriver.safari.driver", "/usr/bin/safaridriver");
         SafariOptions options = new SafariOptions();
+        options.setCapability("webSocketUrl", true);
         options.setCapability("safari:useSimulator", false);
         options.setCapability("safari:diagnose", false);
         webDriver = new SafariDriver(options);
@@ -162,6 +193,7 @@ public class Driver {
     private void initializeEdgeDriver() {
         WebDriverManager.edgedriver().setup();
         EdgeOptions options = new EdgeOptions();
+        options.addArguments("--no-sandbox");
         EdgeBrowserLogs();
         EdgeDriverService service = EdgeDriverService.createDefaultService();
         webDriver = new EdgeDriver(service, options);
@@ -174,28 +206,34 @@ public class Driver {
     private void initializeHeadlessEdgeDriver() {
         WebDriverManager.edgedriver().setup();
         EdgeOptions options = new EdgeOptions();
+        options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
         options.addArguments("window-size=1920,1080");
         EdgeBrowserLogs();
         webDriver = new EdgeDriver(options);
-        webDriver.manage().window().maximize();
     }
 
-    private void loggingSupressors() {
+    private void loggingSuppressors() {
         Logger.getLogger("org.openqa.selenium").setLevel(Level.SEVERE);
         Logger.getLogger("org.apache.commons.logging").setLevel(Level.SEVERE);
         Logger.getLogger("io.github.bonigarcia.wdm").setLevel(Level.SEVERE);
     }
+
     private void ChromeBrowserLogs(ChromeOptions options) {
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         options.setCapability("goog:loggingPrefs", logPrefs);
     }
+
     private void FirefoxBrowserLogs(FirefoxOptions options) {
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
-        options.setCapability("moz:firefoxOptions", singletonMap("loggingPrefs", logPrefs));
+        logPrefs.enable(LogType.DRIVER, Level.INFO);
+        options.setCapability("moz:firefoxOptions", java.util.Collections.singletonMap("log", java.util.Collections.singletonMap("level", "trace")));
+        options.setCapability("goog:loggingPrefs", logPrefs);
     }
+
     private void EdgeBrowserLogs() {
         System.setProperty("webdriver.edge.loglevel", "ALL"); // You can set it to ALL, DEBUG, INFO, WARNING, SEVERE, or OFF
     }
@@ -207,11 +245,6 @@ public class Driver {
         return this.webDriver;
     }
 
-    public ShadowDriver getShadowDriver()
-    {
-        return this.shadowDriver;
-    }
-
     //=================================================================== locator Free methods =========================================================
     public void navigateToURL(String URL) {
         try {
@@ -221,6 +254,30 @@ public class Driver {
             Assert.fail(String.valueOf(URL.equalsIgnoreCase(webDriver.getCurrentUrl())));
             log.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    void navigateToUrlWithReadinessState(String url, ReadinessState readinessState) {
+        BrowsingContext navigateContext;
+        try {
+            navigateContext = new BrowsingContext(webDriver, WindowType.TAB);
+            navigateContext.navigate(url, readinessState);
+        } catch (Exception e) {
+            Assert.fail("Failed to navigate to url: " + url + " or failed to wait for readiness state");
+            log.error(e.getLocalizedMessage(), e);
+        }
+
+    }
+
+    public String getCurrentWindowHandle() {
+        String id = "";
+        try {
+            id = webDriver.getWindowHandle();
+            BrowsingContext currentWindowHandleContext = new BrowsingContext(webDriver, id);
+        } catch (Exception e) {
+            Assert.fail("Failed to get current window handle.");
+            log.error(e.getLocalizedMessage(), e);
+        }
+        return id;
     }
 
     public void navigateBack() {
@@ -307,44 +364,81 @@ public class Driver {
         }
         return null;
     }
+
     public void captureScreenshot(Scenario scenario) {
         byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
         scenario.attach(screenshot, "image/png", scenario.getName());
     }
 
     //======================================================================== locators ===============================================================
+//    private WebElement getElementIfVisible(By locator) {
+//
+//        if(Boolean.FALSE.equals(wait.until(ExpectedConditions.and(ExpectedConditions.elementToBeClickable(locator), ExpectedConditions.visibilityOfElementLocated(locator)))))
+//        {
+//            Assert.fail("The element is either not visible or clickable ");
+//        }
+//        return webDriver.findElement(locator);
+//
+//    }
     private WebElement getElementIfVisible(By locator) {
 
-        if(Boolean.FALSE.equals(wait.until(ExpectedConditions.and(ExpectedConditions.elementToBeClickable(locator), ExpectedConditions.visibilityOfElementLocated(locator)))))
-        {
-            Assert.fail("The element is either not visible or clickable ");
-        }
-        return webDriver.findElement(locator);
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(webDriver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofMillis(500));
+        WebElement currentWebelement = wait.until(new Function<WebDriver, WebElement>() {
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(locator);
+            }
+        });
+        return currentWebelement;
+    }
 
+    public List<WebElement> getElementsIfVisible(By locator) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(webDriver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+        List<WebElement> currentWebElements = wait.until(new Function<WebDriver, List<WebElement>>() {
+            public List<WebElement> apply(WebDriver driver) {
+                List<WebElement> elements = driver.findElements(locator);
+                if (elements.isEmpty()) {
+                    return null;
+                } else {
+                    return elements.stream().filter(WebElement::isDisplayed).collect(Collectors.toList());
+                }
+            }
+        });
+        return currentWebElements;
     }
 
     private WebElement getElementIfClickable(By locator) {
-        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+        Wait<WebDriver> wait = new FluentWait<>(webDriver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(Throwable.class);
+
+        return wait.until(driver -> {
+            WebElement element = driver.findElement(locator);
+            return (element != null && element.isEnabled() && element.isDisplayed()) ? element : null;
+        });
     }
 
-    public List<WebElement> getAllElementsVisible(By locator) {
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
-    }
-    public List<WebElement> getAllElementsPresentWithTimeout(By locator,int timeToWaitForEachElement) {
+    public List<WebElement> getAllElementsPresentWithTimeout(By locator, int timeToWaitForEachElement) {
 
         List<WebElement> visibleElements = new ArrayList<>();
         List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         for (WebElement webElement : elements) {
-            if (isElementDisplayedWithTimeout(webElement,timeToWaitForEachElement)) {
+            if (isElementDisplayedWithTimeout(webElement, timeToWaitForEachElement)) {
                 visibleElements.add(webElement);
                 break;
             }
         }
         return visibleElements;
     }
-    public List<WebElement> FindAllElements(By locator)
-    {
-       return  webDriver.findElements(locator);
+
+    public List<WebElement> FindAllElements(By locator) {
+        return webDriver.findElements(locator);
     }
 
     public boolean isElementDisplayed(By locator) {
@@ -354,7 +448,8 @@ public class Driver {
             return false;
         }
     }
-    public boolean isElementDisplayedWithTimeout(By locator,int timeInSecondsToWaitForElement) {
+
+    public boolean isElementDisplayedWithTimeout(By locator, int timeInSecondsToWaitForElement) {
         try {
             WebDriverWait methodWait = new WebDriverWait(webDriver, Duration.ofSeconds(timeInSecondsToWaitForElement));
             return methodWait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
@@ -381,12 +476,7 @@ public class Driver {
     }
 
     public void click(By locator) {
-        try {
-            getElementIfClickable(locator).click();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to click on the element");
-        }
+        getElementIfClickable(locator).click();
     }
 
     public void clearText(By locator) {
@@ -407,7 +497,24 @@ public class Driver {
         }
     }
 
-    public WebElement findElement(By locator, String text) {
+    public void uploadFile(By locator, String filePath) {
+        WebElement fileInput = webDriver.findElement(locator);
+        File uploadFile = new File(filePath);
+        fileInput.sendKeys(uploadFile.getAbsolutePath());
+    }
+
+    public void uploadFileWithJS(By locator, String filePath) {
+        WebElement fileInput = webDriver.findElement(locator);
+
+        // Make the input element visible
+        String jsScript = "arguments[0].style.height='auto'; arguments[0].style.visibility='visible';";
+        ((JavascriptExecutor) webDriver).executeScript(jsScript, fileInput);
+
+        // Upload file
+        fileInput.sendKeys(filePath);
+    }
+
+    public WebElement findElement(By locator) {
         WebElement element = null;
         try {
             element = webDriver.findElement(locator);
@@ -427,8 +534,23 @@ public class Driver {
             return "";
         }
     }
+
     public String getText(By locator) {
         return getElementIfVisible(locator).getText();
+    }
+
+    // Wait for an element with exact text
+    public void waitForText(By locator, String text, int timeToWaitInSeconds) {
+        new WebDriverWait(webDriver, Duration.ofSeconds(timeToWaitInSeconds)).until((ExpectedCondition<Boolean>) d ->
+                getText(locator).equals(text)
+        );
+    }
+
+    // Wait for an element containing specific text
+    public void waitForTextContaining(By locator, String text, int timeToWaitInSeconds) {
+        new WebDriverWait(webDriver, Duration.ofSeconds(timeToWaitInSeconds)).until((ExpectedCondition<Boolean>) d ->
+                getText(locator).contains(text)
+        );
     }
 
     public void getAndCompareText(By locator, String textToCompare) {
@@ -608,14 +730,44 @@ public class Driver {
      */
     public void clickByJavascriptUsingLocator(By locator, int locatorIndex) {
         List<WebElement> multiLocator = webDriver.findElements(locator);
-        JavascriptExecutor executor = (JavascriptExecutor) webDriver;
-        executor.executeScript("arguments[0].click();", multiLocator.get(locatorIndex));
+        clickByJS(multiLocator.get(locatorIndex));
+    }
+
+    public void clickByJavascriptUsingLocator(WebElement webElement, int locatorIndex) {
+        List<WebElement> multiLocator = getAllElementsVisible(webElement);
+        clickByJS(multiLocator.get(locatorIndex));
+    }
+
+    /**
+     * Waiting for the webelement be present on the page under the specified locator and clicking it by executing a JS function in the browser.
+     *
+     * @param locator the locator of the element to click.
+     */
+    public void clickByJS(By locator) {
+        try {
+            ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", getElementIfPresent(locator));
+        } catch (Throwable t) {
+            Assert.fail("Unable to click element located by %s by executing Javascript: %s".formatted(locator, t.getMessage()), t);
+        }
+    }
+
+    /**
+     * Clicking the passed webelement by executing a JS function in the browser.
+     *
+     * @param webElement the element to click.
+     */
+    public void clickByJS(WebElement webElement) {
+        try {
+            ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", webElement);
+        } catch (Throwable t) {
+            Assert.fail("Unable to click element by executing Javascript: %s".formatted(t.getMessage()), t);
+        }
     }
 
     /**
      * This closes the browser instance and ends the test.
      */
-    public void SelectFromDropdownUsingVisibleText(By locator, String visibleTextToSelect) {
+    public void selectFromDropdownUsingVisibleText(By locator, String visibleTextToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
 
@@ -628,7 +780,7 @@ public class Driver {
         }
     }
 
-    public void SelectFromDropdownUsingIndex(By locator, int indexToSelect) {
+    public void selectFromDropdownUsingIndex(By locator, int indexToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
         try {
@@ -640,7 +792,7 @@ public class Driver {
         }
     }
 
-    public void SelectFromDropdownUsingValue(By locator, String valueToSelect) {
+    public void selectFromDropdownUsingValue(By locator, String valueToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
         try {
@@ -651,18 +803,23 @@ public class Driver {
             Assert.fail("Failed to select item from dropdown list using index");
         }
     }
+
     /**
      * This will scroll the webElement down.
-     * Note: This only works for chromium browsers
+     * Note: This only works for Chromium browsers
      */
-    public void ScrollElementIntoView(By locator,String trueForDownFalseForUp)
-    {
+    public void scrollElementIntoView(By locator, String trueForDownFalseForUp) {
         WebElement element = webDriver.findElement(locator);
-        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView("+trueForDownFalseForUp+");", element);
+        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView(" + trueForDownFalseForUp + ");", element);
     }
 
 //====================================================================================================================================================
 //======================================================================== WebElements ===============================================================
+
+    private WebElement getElementIfPresent(By locator) {
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
     private WebElement getElementIfVisible(WebElement webElement) {
         return wait.until(ExpectedConditions.visibilityOf(webElement));
     }
@@ -674,6 +831,7 @@ public class Driver {
     public List<WebElement> getAllElementsVisible(WebElement webElement) {
         return wait.until(ExpectedConditions.visibilityOfAllElements(webElement));
     }
+
     public boolean isElementDisplayed(WebElement webElement) {
         try {
             return wait.until(ExpectedConditions.visibilityOf(webElement)).isDisplayed();
@@ -681,6 +839,7 @@ public class Driver {
             return false;
         }
     }
+
 //
 //    public boolean isElementDisplayedHardAssert(WebElement webElement) {
 //        try {
@@ -698,7 +857,8 @@ public class Driver {
             return false;
         }
     }
-    public boolean isElementDisplayedWithTimeout(WebElement webElement,int timeInSecondsToWaitForElement) {
+
+    public boolean isElementDisplayedWithTimeout(WebElement webElement, int timeInSecondsToWaitForElement) {
         try {
             WebDriverWait methodWait = new WebDriverWait(webDriver, Duration.ofSeconds(timeInSecondsToWaitForElement));
             return methodWait.until(ExpectedConditions.visibilityOf(webElement)).isDisplayed();
@@ -720,8 +880,8 @@ public class Driver {
         try {
             getElementIfClickable(webElement).click();
         } catch (Exception e) {
-
-            Assert.fail("Failed to click on the element");
+            log.error("Failed to click web element: {}", e.getMessage());
+            throw e;
         }
     }
 
@@ -729,7 +889,8 @@ public class Driver {
         try {
             getElementIfVisible(webElement).clear();
         } catch (Exception e) {
-            Assert.fail("Failed to clear text from element");
+            log.error("Failed to clear text of web element: {}", e.getMessage());
+            throw e;
         }
     }
 
@@ -739,8 +900,8 @@ public class Driver {
             element.click();
             element.sendKeys(text);
         } catch (Exception e) {
-
-            Assert.fail("Failed to enter text into element | Text to be entered: " + text);
+            log.error("Failed to enter text into element | Text to be entered: {}", text);
+            throw e;
         }
     }
 
@@ -755,12 +916,20 @@ public class Driver {
         return element;
     }
 
-    public String getTextAttribute(WebElement webElement) {
+    public String getValue(WebElement webElement) {
         try {
             return getElementIfVisible(webElement).getAttribute("value");
         } catch (Exception e) {
+            log.error("Failed to get text attribute 'value': {}", e.getMessage());
+            return "";
+        }
+    }
 
-            Assert.fail("Failed to get text attribute 'value'");
+    public String getAttribute(WebElement webElement, String attributeString) {
+        try {
+            return getElementIfVisible(webElement).getAttribute(attributeString);
+        } catch (Exception e) {
+            log.error("Failed to get attribute {}: {}", attributeString, e.getMessage());
             return "";
         }
     }
@@ -879,13 +1048,11 @@ public class Driver {
         }
     }
 
-    public void clickByJavascriptUsingLocator(WebElement webElement, int locatorIndex) {
-        List<WebElement> multiLocator = getAllElementsVisible(webElement);
-        JavascriptExecutor executor = (JavascriptExecutor) webDriver;
-        executor.executeScript("arguments[0].click();", multiLocator.get(locatorIndex));
+    public void waitForPageLoadUsingJavascript() {
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
     }
 
-    public void SelectFromDropdownUsingVisibleText(WebElement webElement, String visibleTextToSelect) {
+    public void selectFromDropdownUsingVisibleText(WebElement webElement, String visibleTextToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
         try {
@@ -897,7 +1064,7 @@ public class Driver {
         }
     }
 
-    public void SelectFromDropdownUsingIndex(WebElement webElement, int indexToSelect) {
+    public void selectFromDropdownUsingIndex(WebElement webElement, int indexToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
         try {
@@ -909,7 +1076,7 @@ public class Driver {
         }
     }
 
-    public void SelectFromDropdownUsingValue(WebElement webElement, String valueToSelect) {
+    public void selectFromDropdownUsingValue(WebElement webElement, String valueToSelect) {
         WebElement dropdownRoot = null;
         Select select = null;
         try {
@@ -920,8 +1087,11 @@ public class Driver {
             Assert.fail("Failed to select item from dropdown list using index");
         }
     }
-
-
-
-
+    private void configure() {
+        loggingSuppressors();
+        actions = new Actions(webDriver);
+        wait = new FluentWait<>(webDriver).withTimeout(defaultTimeout)
+                .pollingEvery(defaultPollInterval)
+                .ignoring(Throwable.class);
+    }
 }

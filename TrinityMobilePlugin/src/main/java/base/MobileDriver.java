@@ -5,9 +5,12 @@ import com.google.gson.JsonObject;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -29,7 +32,9 @@ import static utilities.BarcodeScanner.generateImage;
 public class MobileDriver {
     private static final int defaultTimeout = 10;
     private final MobilePlatformName mobilePlatformName;
+    @Getter
     private AndroidDriver androidDriver;
+    @Getter
     private IOSDriver iosDriver;
     private WebDriverWait wait;
 
@@ -84,6 +89,7 @@ public class MobileDriver {
         };
     }
 
+
     /**
      * Initializes an Android driver instance based on the provided device options.
      *
@@ -137,6 +143,18 @@ public class MobileDriver {
      */
     private WebElement getElementIfVisible(WebElement webElement) {
         return wait.until(ExpectedConditions.visibilityOf(webElement));
+    }
+
+    /**
+     * Method to simulate key press on Android devices.
+     *
+     * @param androidKeyEvent The Android key event to be simulated.
+     */
+    public void pressKeys(AndroidKey androidKeyEvent) {
+        switch (this.mobilePlatformName) {
+            case ANDROID -> androidDriver.pressKey(new KeyEvent(androidKeyEvent));
+            case IOS -> log.error("It's not possible to send keys to an iOS device like this.");
+        }
     }
 
     /**
@@ -217,6 +235,14 @@ public class MobileDriver {
             return getElementIfVisible(webElement).isDisplayed();
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void assertIsElementDisplayed(WebElement webElement, String assertMessage) {
+        try {
+            getElementIfVisible(webElement).isDisplayed();
+        } catch (Exception e) {
+            Assert.fail(assertMessage);
         }
     }
 
@@ -501,8 +527,7 @@ public class MobileDriver {
      */
     public void fillFormField(WebElement webElement, String value) {
         if (value != null) {
-            findElementByScrollingDown(webElement);
-            enterText(webElement, value);
+            enterText(findElementByScrollingDown(webElement), value);
         }
     }
 

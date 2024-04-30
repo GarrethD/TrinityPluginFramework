@@ -1,5 +1,6 @@
 package utilities;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,5 +29,38 @@ public class DateCalculator {
         SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
         //Format the new date and return the result
         return dateFormat.format(newDate);
+    }
+    public static String getDayOfWeek(String dateString, String datePattern) throws ParseException {
+        // Parse the input date string into a Date object
+        SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
+        Date date = dateFormat.parse(dateString);
+
+        // Set the date into a Calendar object
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        // Determine the day of the week
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        // Mapping the day number to the name of the day
+        switch(dayOfWeek) {
+            case Calendar.SUNDAY:
+                return "Sunday";
+            case Calendar.MONDAY:
+                return "Monday";
+            case Calendar.TUESDAY:
+                return "Tuesday";
+            case Calendar.WEDNESDAY:
+                return "Wednesday";
+            case Calendar.THURSDAY:
+                return "Thursday";
+            case Calendar.FRIDAY:
+                return "Friday";
+            case Calendar.SATURDAY:
+                return "Saturday";
+            default:
+                // In case of an unexpected value, return an empty string or an error message
+                return "Invalid day";
+        }
     }
 }
