@@ -39,10 +39,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static freemarker.template.utility.Collections12.singletonMap;
-
 @Slf4j
-public class Driver {
+public class SeleniumDriver {
     @Getter
     public WebDriver webDriver;
     @Getter
@@ -56,18 +54,18 @@ public class Driver {
     private Duration defaultPollInterval = Duration.ofSeconds(1);
     private Actions actions;
 
-    private static final Logger logger = Logger.getLogger(Driver.class.getName());
+    private static final Logger logger = Logger.getLogger(SeleniumDriver.class.getName());
 
     /**
      * Enables custom driver and waiting set up.
      *
      * @param webDriver configured webdriver instance.
      */
-    public Driver(WebDriver webDriver) {
+    public SeleniumDriver(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
 
-    public Driver(String browserName) {
+    public SeleniumDriver(String browserName) {
         if (UtilityMethods.getBrowserstackEnabled()) {
             initializeRemoteDriver();
         } else {

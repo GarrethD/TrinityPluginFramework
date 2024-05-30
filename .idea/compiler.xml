@@ -6,17 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="trinityclient" />
         <module name="trinitywebplugin" />
         <module name="trinityapiplugin" />
         <module name="trinityutilityplugin" />
+        <module name="trinityCucmberClient" />
+        <module name="TrinityTestNGClient" />
         <module name="trinitymobileplugin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cliendbuild" target="17" />
       <module name="mobilecore" target="17" />
+      <module name="trinityclient" target="17" />
       <module name="trinityParentPom" target="17" />
+      <module name="trinityTestNGClient" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
