@@ -14,11 +14,14 @@
         <option value="$USER_HOME$/Documents/TrinityPluginFramework/TrinityClient/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityCucumbrClient/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityTestNGClient/pom.xml" />
+        <option value="$PROJECT_DIR$/TrinityParentPom/TrinityClientTestNG/pom.xml" />
+        <option value="$PROJECT_DIR$/TrinityClientTestNG/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$USER_HOME$/Documents/TrinityPluginFramework/TrinityClient/pom.xml" />
+        <option value="$PROJECT_DIR$/TrinityTestNGClient/pom.xml" />
       </set>
     </option>
   </component>

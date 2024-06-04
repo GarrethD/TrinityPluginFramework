@@ -2,15 +2,16 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="trinitywebplugin" />
         <module name="trinityapiplugin" />
+        <module name="TrinityClientTestNG" />
         <module name="trinityutilityplugin" />
         <module name="trinityCucmberClient" />
-        <module name="TrinityTestNGClient" />
         <module name="trinitymobileplugin" />
       </profile>
     </annotationProcessing>
@@ -20,6 +21,7 @@
       <module name="trinityclient" target="17" />
       <module name="trinityParentPom" target="17" />
       <module name="trinityTestNGClient" target="21" />
+      <module name="TrinityTestNGClient" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

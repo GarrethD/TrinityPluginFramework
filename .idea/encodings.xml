@@ -7,10 +7,14 @@
     <file url="file://$PROJECT_DIR$/TrinityApiPlugin/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityClient/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityClient/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityClientTestNG/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityClientTestNG/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityCucumbrClient/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityCucumbrClient/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityMobilePlugin/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityMobilePlugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityParentPom/TrinityClientTestNG/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TrinityParentPom/TrinityClientTestNG/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityParentPom/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityParentPom/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/TrinityTestNGClient/src/main/java" charset="UTF-8" />

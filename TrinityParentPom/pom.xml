@@ -8,6 +8,9 @@
     <artifactId>trinityparentPom</artifactId>
     <version>v1.01</version>
     <packaging>pom</packaging>
+    <modules>
+        <module>TrinityClientTestNG</module>
+    </modules>
 
     <properties>
         <!--suppress UnresolvedMavenProperty -->

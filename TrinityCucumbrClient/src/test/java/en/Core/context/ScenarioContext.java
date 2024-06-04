@@ -1,10 +1,11 @@
 package en.Core.context;
 
-import base.Driver;
+
+import base.SeleniumDriver;
 import en.Core.pageobjects.webpageobjects.*;
 
 public class ScenarioContext {
-    public Driver driver = null;
+    public SeleniumDriver driver = null;
     public String url;
     public CookiePage cookiePage;
     public LoginPage loginpage;
