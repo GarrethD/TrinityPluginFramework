@@ -12,21 +12,22 @@ The In this repo you will find multiple projects. Each project serves a purpose.
 
 ## Supported operating systems
 
-![]() <img src="ReadMeImages/windows.png"  width="100">
-![]() <img src="ReadMeImages/apple.png"  width="100">
-![]() <img src="ReadMeImages/linuxpengu4.png"  width="100">
+Mac os
+Windows
+Linux
 
 ## Supported mobile platforms
 
-![]() <img src="ReadMeImages/android.png"  width="100">
-![]() <img src="ReadMeImages/ios.png"  width="60">
+Androind
+IOS
 
 ## Supported browsers 
 
-![]() <img src="ReadMeImages/chrome.png"  width="100">
-![]() <img src="ReadMeImages/firefox.png"  width="100">
-![]() <img src="ReadMeImages/edge.png"  width="100">
-![]() <img src="ReadMeImages/safari.png"  width="100">
+Chrome
+Firefox
+Edge
+Safari
+(If there is a binary , the framework can run it.)
 
 
 
