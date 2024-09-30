@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.*;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 import java.io.File;
@@ -39,8 +40,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+
 @Slf4j
-public class SeleniumDriver {
+public class Driver {
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Driver.class);
     @Getter
     public WebDriver webDriver;
     @Getter
@@ -54,18 +57,18 @@ public class SeleniumDriver {
     private Duration defaultPollInterval = Duration.ofSeconds(1);
     private Actions actions;
 
-    private static final Logger logger = Logger.getLogger(SeleniumDriver.class.getName());
+    private static final Logger logger = Logger.getLogger(Driver.class.getName());
 
     /**
      * Enables custom driver and waiting set up.
      *
      * @param webDriver configured webdriver instance.
      */
-    public SeleniumDriver(WebDriver webDriver) {
+    public Driver(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
 
-    public SeleniumDriver(String browserName) {
+    public Driver(String browserName) {
         if (UtilityMethods.getBrowserstackEnabled()) {
             initializeRemoteDriver();
         } else {
@@ -422,30 +425,6 @@ public class SeleniumDriver {
         });
     }
 
-    public List<WebElement> getAllElementsPresentWithTimeout(By locator, int timeToWaitForEachElement) {
-
-        List<WebElement> visibleElements = new ArrayList<>();
-        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
-        for (WebElement webElement : elements) {
-            if (isElementDisplayedWithTimeout(webElement, timeToWaitForEachElement)) {
-                visibleElements.add(webElement);
-                break;
-            }
-        }
-        return visibleElements;
-    }
-
-    public List<WebElement> FindAllElements(By locator) {
-        return webDriver.findElements(locator);
-    }
-
-    public boolean isElementDisplayed(By locator) {
-        try {
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
-        } catch (NoSuchElementException | TimeoutException ex) {
-            return false;
-        }
-    }
 
     public boolean isElementDisplayedWithTimeout(By locator, int timeInSecondsToWaitForElement) {
         try {
@@ -724,45 +703,6 @@ public class SeleniumDriver {
     }
 
     /**
-     * This will interact with the accept button on a generic popup on a website.
-     */
-    public void clickByJavascriptUsingLocator(By locator, int locatorIndex) {
-        List<WebElement> multiLocator = webDriver.findElements(locator);
-        clickByJS(multiLocator.get(locatorIndex));
-    }
-
-    public void clickByJavascriptUsingLocator(WebElement webElement, int locatorIndex) {
-        List<WebElement> multiLocator = getAllElementsVisible(webElement);
-        clickByJS(multiLocator.get(locatorIndex));
-    }
-
-    /**
-     * Waiting for the webelement be present on the page under the specified locator and clicking it by executing a JS function in the browser.
-     *
-     * @param locator the locator of the element to click.
-     */
-    public void clickByJS(By locator) {
-        try {
-            ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", getElementIfPresent(locator));
-        } catch (Throwable t) {
-            Assert.fail("Unable to click element located by %s by executing Javascript: %s".formatted(locator, t.getMessage()), t);
-        }
-    }
-
-    /**
-     * Clicking the passed webelement by executing a JS function in the browser.
-     *
-     * @param webElement the element to click.
-     */
-    public void clickByJS(WebElement webElement) {
-        try {
-            ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", webElement);
-        } catch (Throwable t) {
-            Assert.fail("Unable to click element by executing Javascript: %s".formatted(t.getMessage()), t);
-        }
-    }
-
-    /**
      * This closes the browser instance and ends the test.
      */
     public void selectFromDropdownUsingVisibleText(By locator, String visibleTextToSelect) {
@@ -811,280 +751,7 @@ public class SeleniumDriver {
         ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView(" + trueForDownFalseForUp + ");", element);
     }
 
-//====================================================================================================================================================
-//======================================================================== WebElements ===============================================================
 
-    private WebElement getElementIfPresent(By locator) {
-        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-    }
-
-    private WebElement getElementIfVisible(WebElement webElement) {
-        return wait.until(ExpectedConditions.visibilityOf(webElement));
-    }
-
-    private WebElement getElementIfClickable(WebElement webElement) {
-        return wait.until(ExpectedConditions.elementToBeClickable(webElement));
-    }
-
-    public List<WebElement> getAllElementsVisible(WebElement webElement) {
-        return wait.until(ExpectedConditions.visibilityOfAllElements(webElement));
-    }
-
-    public boolean isElementDisplayed(WebElement webElement) {
-        try {
-            return wait.until(ExpectedConditions.visibilityOf(webElement)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-//
-//    public boolean isElementDisplayedHardAssert(WebElement webElement) {
-//        try {
-//            return wait.until(ExpectedConditions.visibilityOf(webElement)).isDisplayed();
-//        } catch (NoSuchElementException | TimeoutException ex) {
-//            Assert.fail("Failed to wait for element to be displayed");
-//            return false;
-//        }
-//    }
-
-    public boolean isElementsDisplayed(WebElement webElement, int locatorIndex) {
-        try {
-            return wait.until(ExpectedConditions.visibilityOfAllElements(webElement)).get(locatorIndex).isDisplayed();
-        } catch (NoSuchElementException | TimeoutException ex) {
-            return false;
-        }
-    }
-
-    public boolean isElementDisplayedWithTimeout(WebElement webElement, int timeInSecondsToWaitForElement) {
-        try {
-            WebDriverWait methodWait = new WebDriverWait(webDriver, Duration.ofSeconds(timeInSecondsToWaitForElement));
-            return methodWait.until(ExpectedConditions.visibilityOf(webElement)).isDisplayed();
-        } catch (NoSuchElementException | TimeoutException ex) {
-            return false;
-        }
-    }
-
-    public void clickByLocatorIndex(WebElement webElement, int locatorIndex) {
-        try {
-            List<WebElement> multiLocator = getAllElementsVisible(webElement);
-            multiLocator.get(locatorIndex).click();
-        } catch (Exception e) {
-            Assert.fail("Failed to click on the element");
-        }
-    }
-
-    public void click(WebElement webElement) {
-        try {
-            getElementIfClickable(webElement).click();
-        } catch (Exception e) {
-            log.error("Failed to click web element: {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    public void clearText(WebElement webElement) {
-        try {
-            getElementIfVisible(webElement).clear();
-        } catch (Exception e) {
-            log.error("Failed to clear text of web element: {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    public void enterText(WebElement webElement, String text) {
-        try {
-            WebElement element = getElementIfClickable(webElement);
-            element.click();
-            element.sendKeys(text);
-        } catch (Exception e) {
-            log.error("Failed to enter text into element | Text to be entered: {}", text);
-            throw e;
-        }
-    }
-
-    public WebElement findElement(WebElement webElement) {
-        WebElement element = null;
-        try {
-            element = getElementIfVisible(webElement);
-        } catch (Exception e) {
-
-            Assert.fail("Failed to return element by locator: ");
-        }
-        return element;
-    }
-
-    public String getValue(WebElement webElement) {
-        try {
-            return getElementIfVisible(webElement).getAttribute("value");
-        } catch (Exception e) {
-            log.error("Failed to get text attribute 'value': {}", e.getMessage());
-            return "";
-        }
-    }
-
-    public String getAttribute(WebElement webElement, String attributeString) {
-        try {
-            return getElementIfVisible(webElement).getAttribute(attributeString);
-        } catch (Exception e) {
-            log.error("Failed to get attribute {}: {}", attributeString, e.getMessage());
-            return "";
-        }
-    }
-
-    public String getText(WebElement webElement) {
-        return getElementIfVisible(webElement).getText();
-    }
-
-    public void enterKeyCombination(WebElement webElement, String keyCombination) {
-        try {
-            WebElement element = getElementIfClickable(webElement);
-            switch (keyCombination.toUpperCase()) {
-                case "TAB" -> element.sendKeys(Keys.TAB);
-                case "ENTER" -> element.sendKeys(Keys.ENTER);
-                case "F5" -> element.sendKeys(Keys.F5);
-                case "ALT" -> element.sendKeys(Keys.ALT);
-                case "ESCAPE" -> element.sendKeys(Keys.ESCAPE);
-                case "DELETE" -> element.sendKeys(Keys.DELETE);
-                case "PAGE UP" -> element.sendKeys(Keys.PAGE_UP);
-                case "PAGE DOWN" -> element.sendKeys(Keys.PAGE_DOWN);
-                case "LEFT_CONTROL" -> element.sendKeys(Keys.LEFT_CONTROL);
-                case "SPACE" -> element.sendKeys(Keys.SPACE);
-                case "BACKSPACE" -> element.sendKeys(Keys.BACK_SPACE);
-                case "LEFT_SHIFT" -> element.sendKeys(Keys.LEFT_SHIFT);
-            }
-        } catch (Exception e) {
-
-            Assert.fail("Failed to send keys.");
-        }
-    }
-
-    public void scrollHorizontallyByAGivenAmount(WebElement webElement, int xAxisAmount) {
-        try {
-            WebElement element = getElementIfVisible(webElement);
-            int deltaY = element.getRect().y;
-            new Actions(webDriver)
-                    .scrollByAmount(xAxisAmount, deltaY)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to scroll horizontally by amount specified");
-        }
-    }
-
-    public void scrollVerticallyByAGivenAmount(WebElement webElement, int yAxisAmount) {
-        try {
-            WebElement element = getElementIfVisible(webElement);
-            int deltaX = element.getRect().x;
-            new Actions(webDriver)
-                    .scrollByAmount(deltaX, yAxisAmount)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to scroll vertically by amount specified");
-        }
-    }
-
-    public void scrollToElement(WebElement webElement) {
-        try {
-            WebElement iframe = getElementIfVisible(webElement);
-            new Actions(webDriver)
-                    .scrollToElement(iframe)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to scroll to element");
-        }
-    }
-
-    public void clickElementAndHold(WebElement webElement) {
-        try {
-            WebElement clickable = getElementIfClickable(webElement);
-            new Actions(webDriver)
-                    .clickAndHold(clickable)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to click and hold element");
-        }
-    }
-
-    public void doubleClickElement(WebElement webElement) {
-        try {
-            WebElement clickable = getElementIfClickable(webElement);
-            new Actions(webDriver)
-                    .doubleClick(clickable)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to double click on element");
-        }
-    }
-
-    public void moveMouseCursorToElement(WebElement webElement) {
-        try {
-            WebElement hoverable = getElementIfClickable(webElement);
-            new Actions(webDriver)
-                    .moveToElement(hoverable)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to move the mouse cursor to the center of the element.");
-        }
-    }
-
-    public void dragAndDropElement(WebElement dragLocator, WebElement dropLocator) {
-        try {
-            WebElement draggable = getElementIfClickable(dragLocator);
-            WebElement droppable = getElementIfClickable(dropLocator);
-            new Actions(webDriver)
-                    .dragAndDrop(draggable, droppable)
-                    .perform();
-        } catch (Exception e) {
-
-            Assert.fail("Failed to drag the element to the drop location.");
-        }
-    }
-
-    public void waitForPageLoadUsingJavascript() {
-        wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-    }
-
-    public void selectFromDropdownUsingVisibleText(WebElement webElement, String visibleTextToSelect) {
-        WebElement dropdownRoot = null;
-        Select select = null;
-        try {
-            dropdownRoot = getElementIfVisible(webElement);
-            select = new Select(dropdownRoot);
-            select.selectByVisibleText(visibleTextToSelect);
-        } catch (Exception e) {
-            Assert.fail("Failed to select item from dropdown list using visible text");
-        }
-    }
-
-    public void selectFromDropdownUsingIndex(WebElement webElement, int indexToSelect) {
-        WebElement dropdownRoot = null;
-        Select select = null;
-        try {
-            dropdownRoot = getElementIfVisible(webElement);
-            select = new Select(dropdownRoot);
-            select.selectByIndex(indexToSelect);
-        } catch (Exception e) {
-            Assert.fail("Failed to select item from dropdown list using index");
-        }
-    }
-
-    public void selectFromDropdownUsingValue(WebElement webElement, String valueToSelect) {
-        WebElement dropdownRoot = null;
-        Select select = null;
-        try {
-            dropdownRoot = getElementIfVisible(webElement);
-            select = new Select(dropdownRoot);
-            select.selectByValue(valueToSelect);
-        } catch (Exception e) {
-            Assert.fail("Failed to select item from dropdown list using index");
-        }
-    }
     private void configure() {
         loggingSuppressors();
         actions = new Actions(webDriver);

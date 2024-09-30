@@ -11,7 +11,7 @@
         <option value="$PROJECT_DIR$/TrinityMobinePlugin/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityApiPlugin/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityMobilePlugin/pom.xml" />
-        <option value="$USER_HOME$/Documents/TrinityPluginFramework/TrinityClient/pom.xml" />
+        <option value="$PROJECT_DIR$/../../TrinityPluginFramework/TrinityClient/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityCucumbrClient/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityTestNGClient/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityParentPom/TrinityClientTestNG/pom.xml" />
@@ -20,12 +20,13 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$USER_HOME$/Documents/TrinityPluginFramework/TrinityClient/pom.xml" />
+        <option value="$PROJECT_DIR$/TrinityClientTestNG/pom.xml" />
         <option value="$PROJECT_DIR$/TrinityTestNGClient/pom.xml" />
+        <option value="$PROJECT_DIR$/../../TrinityPluginFramework/TrinityClient/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="22" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

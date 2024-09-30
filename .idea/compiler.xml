@@ -9,7 +9,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="trinitywebplugin" />
         <module name="trinityapiplugin" />
-        <module name="TrinityClientTestNG" />
         <module name="trinityutilityplugin" />
         <module name="trinityCucmberClient" />
         <module name="trinitymobileplugin" />
@@ -19,6 +18,7 @@
       <module name="cliendbuild" target="17" />
       <module name="mobilecore" target="17" />
       <module name="trinityclient" target="17" />
+      <module name="TrinityClientTestNG" target="21" />
       <module name="trinityParentPom" target="17" />
       <module name="trinityTestNGClient" target="21" />
       <module name="TrinityTestNGClient" target="21" />

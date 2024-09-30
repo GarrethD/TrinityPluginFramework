@@ -1,7 +1,7 @@
 package en.Core.stepdefinition;
 
 
-import base.SeleniumDriver;
+import base.Driver;
 import configuration.Environment;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -29,9 +29,9 @@ public class BeforeAndAfterSteps extends CucumberScenario {
         CucumberScenario.scenario = scenario;
         String browserName = Environment.getBrowser("browser");
         scenarioContext.url = Environment.getEnvironment("url");
-        scenarioContext.driver = new SeleniumDriver(browserName);
+        scenarioContext.driver = new Driver(browserName);
         Environment.users("User1");
-        PageObjectHelper.initAllPageObjects(scenarioContext, WebBasePage.class, new Class<?>[]{SeleniumDriver.class}, new Object[]{scenarioContext.driver});
+        PageObjectHelper.initAllPageObjects(scenarioContext, WebBasePage.class, new Class<?>[]{Driver.class}, new Object[]{scenarioContext.driver});
     }
 
     @After("@Web")

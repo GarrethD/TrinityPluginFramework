@@ -6,8 +6,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import en.Core.context.ScenarioContext;
 import en.Core.enums.URLS;
+import utilities.Authentication.GoogleAuthTOTP;
 import utilities.FileHelper;
-import utilities.GoogleAuthentication.GoogleAuthTOTP;
 import java.io.FileInputStream;
 import java.io.IOException;
 

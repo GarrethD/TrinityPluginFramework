@@ -6,45 +6,20 @@
 
     <groupId>trinity.pluginframework.parentpom</groupId>
     <artifactId>trinityparentPom</artifactId>
-    <version>v1.01</version>
+    <version>v1.00</version>
     <packaging>pom</packaging>
-    <modules>
-        <module>TrinityClientTestNG</module>
-    </modules>
+
 
     <properties>
         <!--suppress UnresolvedMavenProperty -->
-        <revision>v1.${CI_PIPELINE_IID}</revision>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <cucumber.version>7.16.1</cucumber.version>
-        <cucumber-extentsreport.version>3.1.1</cucumber-extentsreport.version>
-        <testng.version>7.10.1</testng.version>
-        <extentreports-test-ng-adapter.version>1.2.2</extentreports-test-ng-adapter.version>
-        <extentreports-cucumber7-adapter>1.14.0</extentreports-cucumber7-adapter>
-        <annotations.version>24.1.0</annotations.version>
-        <poi.version>5.2.5</poi.version>
-        <selenium.version>4.19.1</selenium.version>
-        <webdrivermanager.version>5.8.0</webdrivermanager.version>
-        <appium.version>9.2.2</appium.version>
-        <slf4j.version>2.23.1</slf4j.version>
-        <javase.version>3.5.3</javase.version>
-        <opencsv.version>5.9</opencsv.version>
-        <bson.version>5.0.1</bson.version>
-        <rest-assured.version>5.4.0</rest-assured.version>
-        <shadow.dom.reader.version>0.1.4.1</shadow.dom.reader.version>
-        <lombok.version>1.18.32</lombok.version>
-        <google.Auth>1.5.0</google.Auth>
-        <assertJ.version>3.25.3</assertJ.version>
-        <browserstack-java-sdk.version>1.13.20</browserstack-java-sdk.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <playwright.version>1.43.0</playwright.version>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
     </properties>
 
 
     <developers>
         <developer>
-            <email>garreth.dean@spritecloud.com</email>
+            <email>garrethd210@gmail.com</email>
             <name>Garreth Dean</name>
         </developer>
     </developers>
@@ -53,44 +28,44 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>${playwright.version}</version>
+            <version>1.43.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <version>1.18.32</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>${slf4j.version}</version>
+            <version>2.23.1</version>
             <scope>test</scope>
         </dependency>
         <!--=============================  client dependencies  ===================================-->
         <dependency>
             <groupId>tech.grasshopper</groupId>
             <artifactId>extentreports-cucumber7-adapter</artifactId>
-            <version>${extentreports-cucumber7-adapter}</version>
+            <version>1.14.0</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
+            <version>7.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-testng</artifactId>
-            <version>${cucumber.version}</version>
+            <version>7.16.1</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-picocontainer</artifactId>
-            <version>${cucumber.version}</version>
+            <version>7.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.vimalselvam</groupId>
             <artifactId>cucumber-extentsreport</artifactId>
-            <version>${cucumber-extentsreport.version}</version>
+            <version>3.1.1</version>
         </dependency>
             <dependency>
                 <groupId>com.optimaize.languagedetector</groupId>
@@ -130,39 +105,34 @@
         <dependency>
             <groupId>com.warrenstrange</groupId>
             <artifactId>googleauth</artifactId>
-            <version>${google.Auth}</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
+            <version>4.19.1</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <version>7.10.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
-            <version>${javase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdrivermanager.version}</version>
+            <version>3.5.3</version>
         </dependency>
         <dependency>
             <groupId>io.github.sukgu</groupId>
             <artifactId>automation</artifactId>
-            <version>${shadow.dom.reader.version}</version>
+            <version>0.1.4.1</version>
         </dependency>
         <!--=========================================================================================-->
         <!--=============================  mobile core dependencies  ================================-->
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
-            <version>${appium.version}</version>
+            <version>9.2.2</version>
         </dependency>
         <!--=========================================================================================-->
         <!--=============================  api core dependencies  ===================================-->
@@ -170,8 +140,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${rest-assured.version}</version>
-            <scope>compile</scope>
+            <version>5.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -183,7 +152,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.aventstack</groupId>
@@ -193,48 +162,48 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21-ea+17</version>
+            <version>21.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21-ea+17</version>
+            <version>21.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>21-ea+24</version>
+            <version>21.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
+            <version>33.3.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertJ.version}</version>
+            <version>3.25.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>${opencsv.version}</version>
+            <version>5.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>${poi.version}</version>
+            <version>5.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>${poi.version}</version>
+            <version>5.2.5</version>
         </dependency>
         <dependency>
             <groupId>com.browserstack</groupId>
             <artifactId>browserstack-java-sdk</artifactId>
-            <version>${browserstack-java-sdk.version}</version>
+            <version>1.13.20</version>
         </dependency>
     </dependencies>
 

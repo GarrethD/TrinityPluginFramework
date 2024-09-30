@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="suit1">
+    <test name="OrderCases" preserve-order="true">
+        <classes>
+            <class name="en.Core.runner.CucumberApiRunner" />
+        </classes>
+    </test>
+</suite>

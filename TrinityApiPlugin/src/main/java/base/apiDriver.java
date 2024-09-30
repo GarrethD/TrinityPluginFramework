@@ -1,143 +1,108 @@
 package base;
+
 import io.restassured.RestAssured;
-import io.restassured.authentication.AuthenticationScheme;
-import io.restassured.builder.RequestSpecBuilder;
+
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-
-import java.io.*;
-import java.util.Map;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 
 
-/*
-The methods in the ApiCore class have a return type of ApiCore because they use a technique called "method chaining" or "fluent interface."
- This design pattern allows you to chain method calls, which makes the code more readable and easier to understand.
-  By returning ApiCore (the current class), you can chain multiple method calls together in a single line, like this:
-
-  apiCore.setHeader("Content-Type", "application/json")
-       .setBody("{\"name\":\"John\", \"job\":\"developer\"}")
-       .setAuthToken(authenticationScheme);
-
-Each method returns the current instance of the class (this),
-enabling you to call another method on the same instance without having to write multiple lines of code.
- This design pattern is commonly used in API design to make the code more concise and expressive.
- */
 
 public class apiDriver {
 
-    private RequestSpecification request;
-    private RequestSpecBuilder requestSpecBuilder;
+    private static final Logger log = LoggerFactory.getLogger(apiDriver.class);
+    private String baseUrl;
+    private String bearerToken;
 
-    public apiDriver() {
-        requestSpecBuilder = new RequestSpecBuilder();
+    public apiDriver(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    public void setBaseUrl(String baseUrl) {
-        RestAssured.baseURI = baseUrl;
-        requestSpecBuilder.setBaseUri(baseUrl);
+    public void setBearerToken(String token) {
+        this.bearerToken = token;
     }
 
-    public apiDriver setHeader(String headerName, String headerValue) {
-        requestSpecBuilder.addHeader(headerName, headerValue);
-        return this;
-    }
-
-    public apiDriver setHeaders(Map<String, String> headers) {
-        requestSpecBuilder.addHeaders(headers);
-        return this;
-    }
-
-    public apiDriver setContentType(ContentType contentType) {
-        requestSpecBuilder.setContentType(contentType);
-        return this;
-    }
-
-    public apiDriver setBody(String body) {
-        requestSpecBuilder.setBody(body);
-        return this;
-    }
-
-    public apiDriver setBodyFromFile(String filePath) {
+    public Response sendGetRequest(String endpoint) {
         try {
-        JSONParser jsonParser = new JSONParser();
-        FileReader fileReader = new FileReader(filePath);
-        JSONObject jsonObject = null;
-            jsonObject = (JSONObject) jsonParser.parse(fileReader);
-            requestSpecBuilder.setBody(jsonObject.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            return RestAssured
+                    .given()
+                    .baseUri(baseUrl)
+                    .auth().oauth2(bearerToken)
+                    .contentType(ContentType.JSON)
+                    .get(endpoint)
+                    .then()
+                    .extract()
+                    .response();
+        } catch (Exception e) {
+            log.error("GET request to " + endpoint + " failed.", e);
+            Assert.fail("GET request failed. See logs for details.");
+            return null;
         }
-
-        return this;
     }
 
-    public apiDriver setAuthToken(AuthenticationScheme authentication) {
-        requestSpecBuilder.setAuth(authentication);
-        return this;
+    public Response sendPostRequest(String endpoint, Object body) {
+        try {
+            return RestAssured
+                    .given()
+                    .baseUri(baseUrl)
+                    .auth().oauth2(bearerToken)
+                    .contentType(ContentType.JSON)
+                    .body(body)
+                    .post(endpoint)
+                    .then()
+                    .extract()
+                    .response();
+        } catch (Exception e) {
+            log.error("POST request to " + endpoint + " failed.", e);
+            Assert.fail("POST request failed. See logs for details.");
+            return null;
+        }
     }
 
-    public apiDriver setQueryParams(Map<String, String> queryParams) {
-        requestSpecBuilder.addQueryParams(queryParams);
-        return this;
+    // Example method for validating response status code
+    public void validateStatusCode(Response response, int expectedStatusCode) {
+        try {
+            Assert.assertEquals(response.getStatusCode(), expectedStatusCode,
+                    "Expected status code " + expectedStatusCode + " but got " + response.getStatusCode());
+        } catch (AssertionError e) {
+            log.error("Status code validation failed.", e);
+            throw e;  // Re-throw the exception for further handling
+        }
     }
 
-    public apiDriver setPathParams(Map<String, String> pathParams) {
-        requestSpecBuilder.addPathParams(pathParams);
-        return this;
+    // Example method for extracting a field from JSON response
+    public String extractFieldFromResponse(Response response, String fieldName) {
+        try {
+            return response.jsonPath().getString(fieldName);
+        } catch (Exception e) {
+            log.error("Failed to extract field " + fieldName + " from response.", e);
+            Assert.fail("Field extraction failed. See logs for details.");
+            return null;
+        }
     }
 
-    public apiDriver setSSLCert(String pathToCert, String keystorePassword) {
-        RestAssured.useRelaxedHTTPSValidation();
-        RestAssured.config = RestAssured.config().sslConfig(
-                RestAssured.config().getSSLConfig().with().keyStore(pathToCert, keystorePassword));
-        return this;
+    // Example method for extracting Bearer Token from response
+    public String extractBearerToken(Response response) {
+        return extractFieldFromResponse(response, "access_token");  // Assuming the token is in 'access_token' field
     }
 
-    public apiDriver setSSLCert(String pathToCert) {
-        RestAssured.useRelaxedHTTPSValidation();
-        RestAssured.config = RestAssured.config().sslConfig(RestAssured.config().getSSLConfig().with().keyStore(pathToCert, "changeit"));
-        return this;
+    // Generic method for logging the response (for debugging or reporting)
+    public void logResponse(Response response) {
+        log.info("Response Status Code: " + response.getStatusCode());
+        log.info("Response Body: " + response.getBody().asPrettyString());
     }
 
-    public Response get(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.get(path);
-    }
+    // Method to validate response contains a specific field
+    public void validateResponseContainsField(Response response, String fieldName) {
+        try {
+            Assert.assertNotNull(response.jsonPath().get(fieldName),
+                    "Expected field " + fieldName + " was not found in the response.");
+        } catch (AssertionError e) {
+            log.error("Field validation failed: " + fieldName, e);
 
-    public Response post(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.post(path);
-    }
-
-    public Response put(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.put(path);
-    }
-
-    public Response delete(String path) {
-    request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.delete(path);
-}
-
-    public Response patch(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.patch(path);
-    }
-
-    public Response options(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.options(path);
-    }
-
-    public Response head(String path) {
-        request = RestAssured.given().spec(requestSpecBuilder.build());
-        return request.head(path);
+            throw e;  // Re-throw for further handling
+        }
     }
 }

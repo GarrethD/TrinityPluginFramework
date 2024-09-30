@@ -15,13 +15,14 @@
     </parent>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>trinity.pluginframework.utilityplugin</groupId>
             <artifactId>trinityutilityplugin</artifactId>
